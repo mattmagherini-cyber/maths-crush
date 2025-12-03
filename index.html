@@ -288,10 +288,11 @@ animate();
 
 
 <script>
-    // --- ETAT JEU ---
-    window.gameState = JSON.parse(localStorage.getItem('mq_500')) || { unlocked: 1, stars: {} };
+    // 1. Récupération sauvegarde
+    window.gameState = JSON.parse(localStorage.getItem('mathQuest_500')) || { unlocked: 1, stars: {} };
+    let currentSession = null;
 
-    // --- MATHS ---
+    // 2. Moteur Mathématique
     function getProblem(lvl) {
         const r = (min,max) => Math.floor(Math.random()*(max-min+1))+min; let q="", a=0;
         if(lvl % 5 === 0) {
@@ -319,18 +320,18 @@ animate();
         return {q,a};
     }
 
-    // --- GAMEPLAY UI ---
-    let currentSession = null;
+    // 3. Gestion du Jeu
     window.game = {
         open: function(lvl) {
+            let b = window.getBiome(lvl); 
             let screen = document.getElementById('game-screen');
-            screen.classList.add('active'); // Ouvre l'écran
-            document.getElementById('g-lvl-num').innerText = lvl;
             
-            // Applique une couleur de fond thématique
-            let biome = window.getBiome(lvl);
-            screen.style.background = biome.css;
-
+            // On tente de charger l'image en fond CSS aussi (optionnel mais joli)
+            screen.style.backgroundImage = `url('${b.image}')`;
+            screen.style.backgroundSize = "cover";
+            screen.classList.add('active');
+            
+            document.getElementById('g-lvl-num').innerText = lvl;
             currentSession = { lvl: lvl, timer: lvl % 5 === 0 ? 60 : 45, maxTime: lvl % 5 === 0 ? 60 : 45, score: 0, problem: null, interval: setInterval(this.tick, 1000) };
             this.nextQ();
         },
@@ -354,95 +355,45 @@ animate();
                 let stars = 1; if(currentSession.timer > currentSession.maxTime*0.5) stars=3; else if(currentSession.timer > currentSession.maxTime*0.2) stars=2;
                 if(stars > (window.gameState.stars[currentSession.lvl] || 0)) window.gameState.stars[currentSession.lvl] = stars;
                 if(currentSession.lvl === window.gameState.unlocked) window.gameState.unlocked++;
-                localStorage.setItem('mq_500', JSON.stringify(window.gameState));
+                localStorage.setItem('mathQuest_500', JSON.stringify(window.gameState));
                 
-                // Mise à jour visuelle
+                // Refresh UI
                 document.getElementById('ui-stars').innerText = Object.values(window.gameState.stars).reduce((a,b)=>a+b,0);
                 document.getElementById('ui-lvl').innerText = window.gameState.unlocked;
-                if(window.updateWorldVisuals) window.updateWorldVisuals();
-                if(window.levelMeshes[currentSession.lvl]) window.spawnConfetti(window.levelMeshes[currentSession.lvl].position);
                 
+                // Refresh 3D
+                if(window.updateWorldVisuals) window.updateWorldVisuals();
+                if(window.loadBiomeTexture) {
+                    let b = window.getBiome(window.gameState.unlocked);
+                    window.loadBiomeTexture(b.image);
+                }
+                
+                if(window.levelMeshes[currentSession.lvl]) window.spawnConfetti(window.levelMeshes[currentSession.lvl].position);
                 this.close();
             } else {
                 currentSession.timer -= 5; let el = document.getElementById('g-inp'); el.classList.add('shake'); setTimeout(()=>el.classList.remove('shake'), 300); el.innerText = "";
             }
         }
     };
-</script>
 
-<script type="module">
-    import * as THREE from 'three';
-    const raycaster = new THREE.Raycaster(); 
-    const mouse = new THREE.Vector2();
-
-    // Déplacement Caméra Fluide
-    window.moveCamera = function(lvlIdx) {
-        if(!window.levelMeshes[lvlIdx]) return;
-        let target = window.levelMeshes[lvlIdx].position;
-        let offset = new THREE.Vector3(0, 8, 20); // Vue arrière
-        
-        let frames = 0, startPos = window.camera.position.clone(), endPos = target.clone().add(offset), startLook = window.controls.target.clone();
-        function loop() {
-            frames++; let t = frames / 60; if(t > 1) t = 1; 
-            let ease = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-            window.camera.position.lerpVectors(startPos, endPos, ease); 
-            window.controls.target.lerpVectors(startLook, target, ease);
-            if(frames < 60) requestAnimationFrame(loop);
-        } loop();
-    }
-
-    // Gestion du Clic (Raycasting)
-    window.addEventListener('click', (e) => {
-        // Ignore les clics si on est dans l'interface de jeu ou sur un bouton
-        if(e.target.closest('button') || e.target.closest('.key') || e.target.id === 'game-screen') return;
-
-        mouse.x = (e.clientX / window.innerWidth) * 2 - 1; 
-        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-        
-        raycaster.setFromCamera(mouse, window.camera);
-        const intersects = raycaster.intersectObjects(window.levelMeshes);
-        
-        if(intersects.length > 0) { 
-            let id = intersects[0].object.userData.id; 
-            if(id <= window.gameState.unlocked) {
-                window.game.open(id); 
-            }
-        }
-    });
-
-    // Curseur Main
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = (e.clientX / window.innerWidth) * 2 - 1; 
-        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-        raycaster.setFromCamera(mouse, window.camera);
-        const intersects = raycaster.intersectObjects(window.levelMeshes);
-        const tooltip = document.getElementById('tooltip');
-        
-        if(intersects.length > 0) {
-            let id = intersects[0].object.userData.id; 
-            document.body.style.cursor = 'pointer';
-            tooltip.style.opacity = 1; tooltip.style.left = e.clientX + 'px'; tooltip.style.top = e.clientY + 'px';
-            tooltip.innerText = (id > window.gameState.unlocked) ? "Verrouillé" : "Niveau " + id;
-        } else { 
-            document.body.style.cursor = 'default'; tooltip.style.opacity = 0; 
-        }
-    });
-
-    // Boucle principale
-    function animate() { 
-        requestAnimationFrame(animate); 
-        if(window.controls) window.controls.update(); 
-        if(window.renderer && window.scene && window.camera) window.renderer.render(window.scene, window.camera); 
-    }
-    animate();
-
-    // Init position caméra au chargement
+    // 4. Initialisation Finale (Le fix est ici)
     setTimeout(() => { 
+        // Affiche les stats
         document.getElementById('ui-lvl').innerText = window.gameState.unlocked; 
         document.getElementById('ui-stars').innerText = Object.values(window.gameState.stars).reduce((a,b)=>a+b,0); 
+        
+        // Met à jour les textures des pierres
         if(window.updateWorldVisuals) window.updateWorldVisuals(); 
+        
+        // Place la caméra
         if(window.moveCamera) window.moveCamera(window.gameState.unlocked); 
-    }, 1000);
+        
+        // --- FORCE LE CHARGEMENT DE L'IMAGE DU NIVEAU ACTUEL ---
+        let currentB = window.getBiome(window.gameState.unlocked);
+        console.log("Chargement initial de l'image : " + currentB.image);
+        if(window.loadBiomeTexture) window.loadBiomeTexture(currentB.image);
+
+    }, 1000); // On attend 1 seconde que Three.js soit prêt
 </script>
 </body>
 </html>
