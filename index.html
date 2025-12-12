@@ -6,7 +6,6 @@
 <title>Maths Quest: Infinity</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
-
 <link rel="apple-touch-icon" href="icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,35 +14,21 @@
     /* --- VARIABLES --- */
     :root { --bg-dark: #050414; --bg-mid: #1a1a38; --accent: #00d2d3; --text: #ffffff; --gold: #f1c40f; }
     
-    /* FONDS DE BASE */
+    /* FONDS */
     body { margin: 0; background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%); font-family: 'Montserrat', sans-serif; color: var(--text); overflow-x: hidden; user-select: none; -webkit-tap-highlight-color: transparent; min-height: 100vh; padding-bottom: 100px; transition: background 1s ease; }
     body.unlock-mode { background: radial-gradient(circle at center, #3a2e05 0%, #050414 90%); }
+    body.prestige-mode { background: radial-gradient(circle at center, #4b3d04 0%, #000000 90%); }
     
-    /* --- CALQUE PRESTIGE --- */
-    .prestige-overlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        z-index: 0; pointer-events: none; opacity: 0; transition: opacity 2s ease;
-        background: linear-gradient(45deg, rgba(44,0,62,0.8), rgba(0,0,70,0.8), rgba(28,181,224,0.8), rgba(142,68,173,0.8), rgba(243,156,18,0.8));
-        background-size: 400% 400%; animation: nebulaBgFast 5s ease infinite;
-        mix-blend-mode: screen;
-    }
-    @keyframes nebulaBgFast { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-    body.prestige-mode .prestige-overlay { opacity: 0.7; }
-
-    /* PRESTIGE STYLES UI */
+    /* PRESTIGE STYLES */
     body.prestige-mode .world-card-global { border-color: #ffd700; box-shadow: 0 0 35px rgba(255, 215, 0, 0.4); }
     body.prestige-mode .world-title-global { color: #ffd700; }
     body.prestige-mode .lvl-btn.current { background: #ffd700; color: #000; box-shadow: 0 0 30px #ffd700; }
     
-    /* BOUTONS LEGEND */
+    /* BOUTONS LEGEND (MONDE 26) */
     .lvl-btn.legend { border-color: #ffd700; color: #ffd700; background: rgba(0,0,0,0.8); font-size: 0.9rem; letter-spacing: 1px; width: 90px; height: 90px; }
     .lvl-btn.legend.completed { background: linear-gradient(135deg, #ffd700, #e67e22); color: #000; text-shadow: none; box-shadow: 0 0 25px #ffd700; border: 2px solid #fff; }
     .lvl-btn.legend.current { animation: legendPulse 1.5s infinite; background: rgba(255, 215, 0, 0.2); }
     @keyframes legendPulse { 0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); } }
-
-    /* EFFET ASCENSION */
-    body.ready-for-ascension { animation: cosmicShake 5s infinite ease-in-out; }
-    @keyframes cosmicShake { 0%, 100% { filter: hue-rotate(0deg); } 50% { filter: hue-rotate(15deg) brightness(1.2); } }
 
     /* --- BOUTON VERS L'INFINI --- */
     .energy-gate {
@@ -94,6 +79,7 @@
     #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
     .flash-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 200; pointer-events: none; opacity: 0; transition: opacity 0.5s; }
     .flash-overlay.active { opacity: 1; }
+    /* Z-INDEX IMPORTANT POUR QUE LE MENU RESTE CLIQUABLE */
     #main-menu { padding: 15px; padding-top: 130px; width: 100%; max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; position: relative; z-index: 10; }
     #grid-container { display: flex; flex-direction: column; align-items: center; width: 100%; }
 
@@ -109,6 +95,7 @@
     .world-info-global { position: relative; z-index: 5; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
     .world-title-global { font-family: 'Russo One'; font-size: 1.7rem; text-transform: uppercase; color: #fff; text-shadow: 0 4px 15px rgba(0,0,0,0.9); margin-bottom: 8px; text-align: center; line-height: 1.2; }
     .world-status-global { font-size: 1.3rem; color: var(--gold); font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,1); display: block; }
+    
     .gate-locked { margin: auto; z-index: 10; width: 85%; height: 90px; padding: 0; background: transparent; border: none; pointer-events: auto; }
     .btn-unlock-world { width: 100%; height: 100%; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(180deg, rgba(60, 60, 70, 0.8) 0%, rgba(30, 30, 40, 0.9) 100%); backdrop-filter: blur(15px); border: 2px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); font-family: 'Russo One'; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 2px; cursor: not-allowed; transition: all 0.3s; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
     .btn-unlock-world .req-stars { font-size: 1rem; margin-top: 5px; font-weight: 700; color: #fab1a0; font-family: 'Russo One', sans-serif; display: flex; align-items: center; gap: 8px; }
@@ -126,7 +113,6 @@
     .lvl-btn.locked { background: rgba(15,15,25,0.8); border-color: #444; color: #555; pointer-events: none; }
     .lvl-btn:nth-child(4n+1) { transform: translateX(0); } .lvl-btn:nth-child(4n+2) { transform: translateX(80px); } .lvl-btn:nth-child(4n+3) { transform: translateX(0); } .lvl-btn:nth-child(4n+4) { transform: translateX(-80px); }
     .stars-icon { font-size: 0.8rem; position: absolute; bottom: -18px; color: #fdcb6e; background: rgba(0,0,0,0.9); padding: 4px 10px; border-radius: 15px; box-shadow: 0 2px 5px black; }
-    
     /* UI FIXES */
     .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; font-size: 0.6em; margin: 0 4px; }
     .frac sup { position: static; border-bottom: 2px solid white; padding-bottom: 1px; line-height: 1; }
@@ -158,51 +144,66 @@
     .btn-modal { background: linear-gradient(135deg, #00b894 0%, #00cec9 100%); color: white; border: none; padding: 15px 30px; font-family: 'Russo One', sans-serif; font-size: 1.2rem; border-radius: 50px; cursor: pointer; width: 100%; box-shadow: 0 10px 20px rgba(0, 184, 148, 0.4); transition: transform 0.2s; }
     .btn-modal:hover { transform: scale(1.05); }
     .btn-modal.fail { background: linear-gradient(135deg, #d63031 0%, #ff7675 100%); box-shadow: 0 10px 20px rgba(214, 48, 49, 0.4); }
-    
-    #game-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 8, 25, 0.9); backdrop-filter: blur(5px); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 100px; box-sizing: border-box; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.4, 0.0, 0.2, 1); }
+    #game-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 8, 25, 0.9); backdrop-filter: blur(5px); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 80px; box-sizing: border-box; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.4, 0.0, 0.2, 1); }
     #game-screen.active { transform: translateY(0); }
     #game-screen.error-flash { animation: flashRed 0.4s ease-out; } @keyframes flashRed { 0%, 100% { background: rgba(10, 8, 25, 0.85); } 50% { background: rgba(100, 30, 30, 0.85); } }
-    .q-display { font-family: 'Russo One', sans-serif; font-size: 3.5rem; margin: 15px 0; text-align: center; color: #fff; text-shadow: 0 2px 10px black; } 
-    .inp-display { font-family: 'Russo One', sans-serif; font-size: 3rem; min-width: 240px; padding: 0 25px; margin-bottom: 25px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 16px; text-align: center; color: #00d2d3; height: 80px; line-height: 80px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
-    .numpad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 95%; max-width: 380px; } 
-    .key { padding: 18px 0; font-size: 1.5rem; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; background: #383a45; color: #fff; box-shadow: 0 4px 0 #222; transition: all 0.1s; } .key:hover { background: #4a4d5a; } .key:active { transform: translateY(4px); box-shadow: 0 0 0 #222; } .k-ok { background: #00b894; color: white; grid-column: span 4; margin-top: 10px; box-shadow: 0 4px 0 #00796b; font-family: 'Russo One', sans-serif; } .k-del { background: #d63031; } .k-op { background: #0984e3; } .k-frac { background: #e17055; } 
-    
-    .k-close { position: absolute; top: 100px; right: 20px; background: rgba(255,255,255,0.1); border: none; border-radius: 50%; width: 45px; height: 45px; color: white; font-size: 2rem; cursor: pointer; transition: all 0.2s; z-index: 101; }
+    .q-display { font-family: 'Russo One', sans-serif; font-size: 3.5rem; margin: 15px 0; text-align: center; color: #fff; text-shadow: 0 2px 10px black; } .inp-display { font-family: 'Russo One', sans-serif; font-size: 3rem; min-width: 240px; padding: 0 25px; margin-bottom: 25px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.1); border-radius: 16px; text-align: center; color: #00d2d3; height: 80px; line-height: 80px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+    .numpad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 95%; max-width: 380px; } .key { padding: 18px 0; font-size: 1.5rem; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; background: #383a45; color: #fff; box-shadow: 0 4px 0 #222; transition: all 0.1s; } .key:hover { background: #4a4d5a; } .key:active { transform: translateY(4px); box-shadow: 0 0 0 #222; } .k-ok { background: #00b894; color: white; grid-column: span 4; margin-top: 10px; box-shadow: 0 4px 0 #00796b; font-family: 'Russo One', sans-serif; } .k-del { background: #d63031; } .k-op { background: #0984e3; } .k-frac { background: #e17055; } /* Croix descendue à 100px pour passer sous la barre du haut (90px) */
+    .k-close { 
+        position: absolute; 
+        top: 100px; 
+        right: 20px; 
+        background: rgba(255,255,255,0.1); 
+        border: none; 
+        border-radius: 50%; 
+        width: 45px; 
+        height: 45px; 
+        color: white; 
+        font-size: 2rem; 
+        cursor: pointer; 
+        transition: all 0.2s; 
+        z-index: 101; /* Pour être sûr qu'elle soit au-dessus du contenu du jeu */
+    }
     .k-close:hover { transform: scale(1.1); background: rgba(255,255,255,0.2); }
     .bars-container { width: 85%; max-width: 380px; margin-bottom: 10px; } .timer-bar-container { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-bottom: 10px; overflow: hidden; } .timer-bar-fill { height: 100%; background: #00d2d3; width: 100%; transition: width 1s linear, background 0.3s; } .timer-bar-fill.medium { background: #fdcb6e; } .timer-bar-fill.low { background: #d63031; } .level-progress-container { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; } .level-progress-fill { height: 100%; background: #6c5ce7; width: 0%; transition: width 0.3s; } .progress-text { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 5px; font-weight: 700; text-align: right; }
     #settings-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; } #settings-screen.active { opacity: 1; pointer-events: all; }
     .settings-content { background: #2d3436; padding: 40px; border-radius: 25px; width: 85%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); } .setting-row { margin: 20px 0; display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; font-weight: bold; } .switch { position: relative; display: inline-block; width: 60px; height: 34px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; } .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; } input:checked + .slider { background-color: #00cec9; } input:checked + .slider:before { transform: translateX(26px); } .btn-toggle-creative { background: #6c5ce7; color: white; border: none; padding: 15px 20px; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 10px; cursor: pointer; } .btn-danger { background: #d63031; color: white; border: none; padding: 12px; width: 100%; margin-top: 25px; cursor: pointer; border-radius: 8px; font-weight: bold; } .btn-close-settings { background: #b2bec3; color: #2d3436; border: none; padding: 12px; width: 100%; margin-top: 15px; cursor: pointer; border-radius: 8px; font-weight: bold; }
     .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; } @keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-6px, 0, 0); } 40%, 60% { transform: translate3d(6px, 0, 0); } }
-
-    /* --- OPTIMISATION MOBILE (RESPONSIVE) --- */
+/* --- OPTIMISATION MOBILE (RESPONSIVE) --- */
     @media (max-width: 480px) {
+        /* Textes de l'accueil plus petits */
         .world-title-global { font-size: 1.4rem; }
         .energy-title { font-size: 1.2rem; }
         .energy-val { font-size: 1.8rem; }
         
+        /* Barre du haut (HUD) plus fine */
         .hud-top { height: 70px; padding: 0 10px; }
         .stat-val { font-size: 1.1rem; }
         .settings-btn { font-size: 1.5rem; }
         .heart-icons { font-size: 1rem; }
         
-        /* Réduit la marge haute car la HUD est plus petite */
+        /* On remonte le jeu car la barre du haut est plus petite */
         #game-screen { padding-top: 85px; } 
         
+        /* Question et réponse plus petites pour ne pas déborder */
         .q-display { font-size: 2.5rem; margin: 10px 0; }
         .inp-display { height: 60px; line-height: 60px; font-size: 2.2rem; min-width: 200px; margin-bottom: 15px; }
         
+        /* Clavier numérique plus compact */
         .numpad { gap: 8px; width: 92%; }
         .key { padding: 12px 0; font-size: 1.3rem; border-radius: 10px; }
         
-        /* Réajuste la croix */
+        /* On remonte la croix pour qu'elle soit accessible */
         .k-close { top: 80px; right: 15px; width: 40px; height: 40px; font-size: 1.5rem; }
 
+        /* Boutons de niveaux légèrement réduits */
         .lvl-btn { width: 70px; height: 70px; font-size: 1.4rem; margin: 15px 0; }
+        /* Ajustement de la courbe du serpentin pour petits écrans */
         .lvl-btn:nth-child(4n+2) { transform: translateX(60px); }
         .lvl-btn:nth-child(4n+4) { transform: translateX(-60px); }
     }
     
-    /* Pour les très petits écrans en hauteur (ex: iPhone SE) */
+    /* Sécurité supplémentaire pour les écrans peu hauts (ex: iPhone SE) */
     @media (max-height: 650px) {
         .q-display { margin: 5px 0; font-size: 2rem; }
         .key { padding: 8px 0; }
@@ -215,7 +216,6 @@
 <body>
 
 <canvas id="bg-canvas"></canvas>
-<div class="prestige-overlay"></div>
 <div class="flash-overlay" id="flash-effect"></div>
 
 <div id="victory-screen">
