@@ -5288,9 +5288,13 @@ case 15: // POURCENTAGES
     };
 
     window.enterWorld = function(w) {
+        // 1. Mise à jour immédiate du compteur d'étoiles (CORRECTION DU BUG)
+        document.getElementById('ui-stars').innerText = getTotalStars();
+
         const detailScreen = document.getElementById('world-detail-screen');
         const scrollArea = document.getElementById('detail-scroll-area');
         scrollArea.innerHTML = "";
+        
         let wConfig = WORLDS_CONFIG[w-1];
         if(wConfig && wConfig.img) detailScreen.style.backgroundImage = `url('${wConfig.img}')`;
         
