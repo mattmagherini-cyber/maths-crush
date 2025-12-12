@@ -166,7 +166,7 @@
     #game-screen { 
         position: fixed; 
         top: 0; left: 0; 
-        width: 85%; 
+        width: 100%; 
         height: 100dvh; /* Force la hauteur réelle sans barre de nav */
         
         background: rgba(10, 8, 25, 0.95); 
@@ -219,102 +219,93 @@
     #settings-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; } #settings-screen.active { opacity: 1; pointer-events: all; }
     .settings-content { background: #2d3436; padding: 40px; border-radius: 25px; width: 85%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); } .setting-row { margin: 20px 0; display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; font-weight: bold; } .switch { position: relative; display: inline-block; width: 60px; height: 34px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; } .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; } input:checked + .slider { background-color: #00cec9; } input:checked + .slider:before { transform: translateX(26px); } .btn-toggle-creative { background: #6c5ce7; color: white; border: none; padding: 15px 20px; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 10px; cursor: pointer; } .btn-danger { background: #d63031; color: white; border: none; padding: 12px; width: 100%; margin-top: 25px; cursor: pointer; border-radius: 8px; font-weight: bold; } .btn-close-settings { background: #b2bec3; color: #2d3436; border: none; padding: 12px; width: 100%; margin-top: 15px; cursor: pointer; border-radius: 8px; font-weight: bold; }
     .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; } @keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-6px, 0, 0); } 40%, 60% { transform: translate3d(6px, 0, 0); } }
-/* --- OPTIMISATION MOBILE (RESPONSIVE) --- */
-    /* --- OPTIMISATION MOBILE FINALE (RESPONSIVE) --- */
-    /* --- OPTIMISATION MOBILE FINALE --- */
+/* --- OPTIMISATION MOBILE FINALE (INTERFACE COMPACTE) --- */
     @media (max-width: 480px) {
-        /* Empêche le scroll horizontal et élastique sur tout le site */
+        /* Bloque tout scroll parasite */
         html, body { 
-            overflow-x: hidden; 
-            overscroll-behavior: none; 
             height: 100dvh; 
+            overflow: hidden; 
+            overscroll-behavior: none; 
         }
 
-        /* 1. DÉZOOM DU MENU */
+        /* 1. MENU PRINCIPAL (Cartes plus petites) */
         #grid-container {
-            zoom: 0.8; /* Réduit à 80% */
+            zoom: 0.75; /* Dézoom fort du menu */
             width: 100%;
-            padding-bottom: 150px;
+            padding-bottom: 200px;
         }
 
-        /* 2. ADAPTATION JEU (ANTI-DÉBORDEMENT) */
+        /* 2. JEU : Calibrage pour tout faire rentrer */
         #game-screen { 
-            padding-top: 80px; 
-            justify-content: space-evenly; /* Répartit l'espace verticalement */
-            padding-bottom: 20px;
+            padding-top: 75px; /* Juste sous la barre du haut */
+            justify-content: flex-start; /* Colle tout vers le haut */
+            gap: 2vh; /* Petit espace vertical élastique entre les éléments */
         }
 
-        /* Réduction des textes pour éviter que ça sorte */
-        .q-display { font-size: 2.5rem; margin: 0; text-shadow: 0 2px 5px black; }
-        .inp-display { height: 55px; line-height: 55px; font-size: 2rem; min-width: 160px; margin-bottom: 10px; }
-        #g-instr { min-height: 20px; margin: 5px 0; font-size: 0.85rem; }
+        /* Instructions minuscules */
+        #g-instr { 
+            min-height: 15px; margin: 0; font-size: 0.8rem; 
+        }
 
-        /* Clavier compact */
-        .numpad { gap: 8px; width: 94%; max-height: 45vh; }
-        .key { padding: 10px 0; font-size: 1.4rem; border-radius: 12px; }
+        /* Barres de vie/progression réduites */
+        .bars-container { 
+            width: 90%; margin-bottom: 0; transform: scale(0.9); 
+        }
 
-        /* Barre du haut compacte */
-        .hud-top { height: 70px; padding: 0 5px; z-index: 26000; /* Au-dessus du jeu */ }
+        /* Question et Réponse plus petites */
+        .q-display { 
+            font-size: 2rem; margin: 5px 0; line-height: 1;
+        }
+        .inp-display { 
+            height: 50px; line-height: 50px; 
+            font-size: 1.8rem; /* Texte réponse plus petit */
+            min-width: 140px; 
+            margin-bottom: 5px; 
+        }
+
+        /* CLAVIER COMPACT (Le point clé pour que ça rentre) */
+        .numpad { 
+            gap: 6px; /* Touches plus serrées */
+            width: 96%; 
+            margin-bottom: 10px;
+        }
+        .key { 
+            padding: 8px 0; /* Touches moins hautes */
+            font-size: 1.3rem; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 0 #222; /* Ombre réduite */
+        }
+        .key:active { transform: translateY(2px); }
+
+        /* HUD (Barre du haut) */
+        .hud-top { height: 70px; padding: 0 5px; z-index: 26000; }
         .stat-val { font-size: 0.9rem; }
-        .stat-label { font-size: 0.6rem; }
-        .settings-btn { font-size: 1.4rem; }
         .heart-icons { font-size: 1rem; letter-spacing: 1px; }
 
-        /* Croix de fermeture bien placée */
-        .k-close { top: 80px; right: 10px; width: 40px; height: 40px; font-size: 1.5rem; }
-            width: 50px; height: 50px; 
-            background: rgba(255, 50, 50, 0.3); border: 1px solid rgba(255,255,255,0.2);
+        /* Croix (En bas à droite, petite) */
+        .k-close { 
+            top: auto; bottom: 15px; right: 15px; 
+            width: 45px; height: 45px; font-size: 1.5rem;
+            background: rgba(255, 50, 50, 0.4); 
+            border: 1px solid rgba(255,255,255,0.3);
             z-index: 27000;
         }
         
         /* Victoire */
         .vic-title { font-size: 11vw; }
         .vic-icon { font-size: 4rem; }
+        .vic-text { font-size: 0.9rem; padding: 0 30px; }
+        .btn-legend-action { padding: 15px 30px; font-size: 1rem; }
     }
-    
-    /* Sécurité petits iPhone (SE) */
-    @media (max-height: 670px) {
-        .q-display { font-size: 2rem; }
-        .key { padding: 6px 0; font-size: 1.2rem; }
-        .inp-display { height: 45px; line-height: 45px; margin-bottom: 5px; }
-        .bars-container { margin-bottom: 5px; transform: scale(0.9); }
-        .world-card-global { margin-bottom: 30px; }
-    }
-        
-        /* Barre du haut (HUD) plus fine */
-        .hud-top { height: 70px; padding: 0 10px; }
-        .stat-val { font-size: 1.1rem; }
-        .settings-btn { font-size: 1.5rem; }
-        .heart-icons { font-size: 1rem; }
-        
-        /* On remonte le jeu car la barre du haut est plus petite */
-        #game-screen { padding-top: 85px; } 
-        
-        /* Question et réponse plus petites pour ne pas déborder */
-        .q-display { font-size: 2.5rem; margin: 10px 0; }
-        .inp-display { height: 60px; line-height: 60px; font-size: 2.2rem; min-width: 200px; margin-bottom: 15px; }
-        
-        /* Clavier numérique plus compact */
-        .numpad { gap: 8px; width: 92%; }
-        .key { padding: 12px 0; font-size: 1.3rem; border-radius: 10px; }
-        
-        /* On remonte la croix pour qu'elle soit accessible */
-        .k-close { top: 80px; right: 15px; width: 40px; height: 40px; font-size: 1.5rem; }
 
-        /* Boutons de niveaux légèrement réduits */
-        .lvl-btn { width: 70px; height: 70px; font-size: 1.4rem; margin: 15px 0; }
-        /* Ajustement de la courbe du serpentin pour petits écrans */
-        .lvl-btn:nth-child(4n+2) { transform: translateX(60px); }
-        .lvl-btn:nth-child(4n+4) { transform: translateX(-60px); }
-    }
-    
-    /* Sécurité supplémentaire pour les écrans peu hauts (ex: iPhone SE) */
-    @media (max-height: 650px) {
-        .q-display { margin: 5px 0; font-size: 2rem; }
-        .key { padding: 8px 0; }
-        .inp-display { margin-bottom: 10px; }
-        .bars-container { margin-bottom: 5px; }
-        #g-instr { min-height: 20px; font-size: 0.9rem; margin: 5px 0 10px 0; }
+    /* Sécurité pour les très petits écrans (iPhone SE, vieux Android) */
+    @media (max-height: 600px) {
+        .numpad { width: 90%; gap: 4px; }
+        .key { padding: 5px 0; font-size: 1.1rem; }
+        .q-display { font-size: 1.5rem; }
+        .inp-display { height: 40px; line-height: 40px; font-size: 1.5rem; }
+        #game-screen { padding-top: 60px; gap: 1vh; }
+        .hud-top { height: 50px; }
     }
 </style>
 </head>
