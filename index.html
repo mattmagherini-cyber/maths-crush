@@ -150,7 +150,21 @@
     @keyframes pulseLives { 50% { transform: scale(1.3); } }
     .penalty-float { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #d63031; font-weight: 900; font-size: 4rem; pointer-events: none; z-index: 200; animation: floatUp 0.8s ease-out forwards; text-shadow: 0 0 10px white; }
     @keyframes floatUp { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -150%) scale(1.5); } }
-    #result-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(8px); }
+    /* --- MODALE DE RÉSULTAT (CORRECTION Z-INDEX) --- */
+    #result-modal { 
+        position: fixed; 
+        top: 0; left: 0; 
+        width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.85); 
+        z-index: 50000; /* FORCE L'AFFICHAGE AU-DESSUS DE TOUT (HUD, JEU, CLAVIER) */
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        opacity: 0; 
+        pointer-events: none; 
+        transition: opacity 0.3s; 
+        backdrop-filter: blur(8px); 
+    }
     #result-modal.active { opacity: 1; pointer-events: all; }
     .modal-card { background: #1e1e2e; padding: 40px 30px; border-radius: 30px; text-align: center; width: 85%; max-width: 350px; border: 2px solid rgba(255,255,255,0.1); transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
     #result-modal.active .modal-card { transform: scale(1); }
@@ -177,7 +191,7 @@
         flex-direction: column; 
         align-items: center; 
         justify-content: flex-start; /* Aligne en haut */
-        padding-top: 90px; /* Espace pour la barre du haut */
+        padding-top: 25px; /* Espace pour la barre du haut */
         box-sizing: border-box; 
         
         transform: translateY(100%); 
@@ -203,7 +217,7 @@
         position: absolute; 
         top: 100px; 
         right: 20px; 
-        background: rgba(255,255,255,0.1); 
+        background: rgba(255, 50, 50, 0.4); 
         border: none; 
         border-radius: 50%; 
         width: 45px; 
@@ -298,7 +312,7 @@
         .heart-icons { font-size: 1rem; letter-spacing: 1px; }
 
         .k-close { 
-            top: auto; bottom: 20px; right: 20px; 
+            top: 80; right: 20px; 
             width: 45px; height: 45px; font-size: 1.5rem;
             background: rgba(255, 50, 50, 0.4); 
             border: 1px solid rgba(255,255,255,0.3);
