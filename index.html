@@ -219,83 +219,85 @@
     #settings-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; } #settings-screen.active { opacity: 1; pointer-events: all; }
     .settings-content { background: #2d3436; padding: 40px; border-radius: 25px; width: 85%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); } .setting-row { margin: 20px 0; display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; font-weight: bold; } .switch { position: relative; display: inline-block; width: 60px; height: 34px; } .switch input { opacity: 0; width: 0; height: 0; } .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; } .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; } input:checked + .slider { background-color: #00cec9; } input:checked + .slider:before { transform: translateX(26px); } .btn-toggle-creative { background: #6c5ce7; color: white; border: none; padding: 15px 20px; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 10px; cursor: pointer; } .btn-danger { background: #d63031; color: white; border: none; padding: 12px; width: 100%; margin-top: 25px; cursor: pointer; border-radius: 8px; font-weight: bold; } .btn-close-settings { background: #b2bec3; color: #2d3436; border: none; padding: 12px; width: 100%; margin-top: 15px; cursor: pointer; border-radius: 8px; font-weight: bold; }
     .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; } @keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-6px, 0, 0); } 40%, 60% { transform: translate3d(6px, 0, 0); } }
-/* --- OPTIMISATION MOBILE FINALE (INTERFACE COMPACTE) --- */
+/* --- OPTIMISATION MOBILE FINALE (SANS ZOOM) --- */
     @media (max-width: 480px) {
-        /* Bloque tout scroll parasite */
+        /* Bloque le scroll élastique sur tout le site */
         html, body { 
             height: 100dvh; 
             overflow: hidden; 
             overscroll-behavior: none; 
         }
 
-        /* 1. MENU PRINCIPAL (Cartes plus petites) */
+        /* 1. MENU PRINCIPAL */
+        #main-menu {
+            height: 100dvh;
+            overflow-y: auto; /* Permet le scroll uniquement ici */
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 50px;
+        }
         #grid-container {
-            zoom: 0.75; /* Dézoom fort du menu */
+            zoom: 0.70; /* On dézoome fort le menu pour bien voir les cartes */
             width: 100%;
-            padding-bottom: 200px;
         }
 
-        /* 2. JEU : Calibrage pour tout faire rentrer */
+        /* 2. JEU COMPACT */
         #game-screen { 
-            padding-top: 75px; /* Juste sous la barre du haut */
-            justify-content: flex-start; /* Colle tout vers le haut */
-            gap: 2vh; /* Petit espace vertical élastique entre les éléments */
+            padding-top: 95px; /* Juste sous la barre */
+            gap: 10px; /* Espace réduit entre les éléments */
         }
 
-        /* Instructions minuscules */
+        /* Instructions */
         #g-instr { 
             min-height: 15px; margin: 0; font-size: 0.8rem; 
         }
 
-        /* Barres de vie/progression réduites */
+        /* Barres réduites */
         .bars-container { 
-            width: 90%; margin-bottom: 0; transform: scale(0.9); 
+            width: 85%; margin-bottom: 0; transform: scale(0.9); 
         }
 
-        /* Question et Réponse plus petites */
+        /* Question plus petite */
         .q-display { 
-            font-size: 2rem; margin: 5px 0; line-height: 1;
+            font-size: 2.2rem; margin: 5px 0; line-height: 1;
         }
+        /* Réponse plus petite */
         .inp-display { 
             height: 50px; line-height: 50px; 
-            font-size: 1.8rem; /* Texte réponse plus petit */
-            min-width: 140px; 
+            font-size: 2rem; 
+            min-width: 150px; 
             margin-bottom: 5px; 
+            padding: 0 10px;
         }
 
-        /* CLAVIER COMPACT (Le point clé pour que ça rentre) */
+        /* CLAVIER COMPACT (Le secret pour que ça rentre) */
         .numpad { 
-            gap: 6px; /* Touches plus serrées */
-            width: 96%; 
-            margin-bottom: 10px;
+            gap: 5px; /* Touches très serrées */
+            width: 90%; /* Moins large */
+            margin-bottom: 20px;
         }
         .key { 
-            padding: 8px 0; /* Touches moins hautes */
-            font-size: 1.3rem; 
+            padding: 10px 0; /* Moins hautes */
+            font-size: 1.4rem; 
             border-radius: 8px; 
-            box-shadow: 0 2px 0 #222; /* Ombre réduite */
         }
-        .key:active { transform: translateY(2px); }
 
         /* HUD (Barre du haut) */
-        .hud-top { height: 70px; padding: 0 5px; z-index: 26000; }
+        .hud-top { height: 80px; padding: 0 5px; z-index: 200; }
         .stat-val { font-size: 0.9rem; }
         .heart-icons { font-size: 1rem; letter-spacing: 1px; }
 
-        /* Croix (En bas à droite, petite) */
+        /* Croix (En bas à droite) */
         .k-close { 
-            top: auto; bottom: 15px; right: 15px; 
+            top: auto; bottom: 20px; right: 20px; 
             width: 45px; height: 45px; font-size: 1.5rem;
             background: rgba(255, 50, 50, 0.4); 
             border: 1px solid rgba(255,255,255,0.3);
-            z-index: 27000;
+            z-index: 300;
         }
         
         /* Victoire */
         .vic-title { font-size: 11vw; }
         .vic-icon { font-size: 4rem; }
-        .vic-text { font-size: 0.9rem; padding: 0 30px; }
-        .btn-legend-action { padding: 15px 30px; font-size: 1rem; }
     }
 
     /* Sécurité pour les très petits écrans (iPhone SE, vieux Android) */
