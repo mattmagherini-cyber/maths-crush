@@ -4206,12 +4206,21 @@ case 15: // POURCENTAGES
                     hint = "Calcule le carré avant de soustraire."; 
                 } 
                 else if (world == 23) { 
-                    let d1 = 2, d2 = 5;
-                    ans = 10;
-                    op = `100 ÷ (${d1} × ${d2})`;
-                    instr = "Dénominateur :"; 
-                    hint = "Calcule le produit dans la parenthèse d'abord."; 
-                } 
+                    // On choisit deux petits nombres pour la parenthèse (ex: 3 et 4)
+                    let d1 = rand(2, 5);
+                    let d2 = rand(2, 5);
+                    
+                    // On choisit la réponse finale souhaitée (ex: 5)
+                    ans = rand(2, 10);
+                    
+                    // On calcule le numérateur pour que la division tombe juste
+                    // Ex: Si d1=3, d2=4 et ans=5 -> Numérateur = 5 * 12 = 60
+                    let numerator = ans * (d1 * d2);
+                    
+                    op = `${numerator} ÷ (${d1} × ${d2})`;
+                    instr = "PRIORITÉ PARENTHÈSE :"; 
+                    hint = "Calcule d'abord la multiplication dans la parenthèse.";
+                }  
                 else if (world == 24) { 
                     let a = rand(2, 10);
                     let b = rand(2, 5);
@@ -4222,15 +4231,23 @@ case 15: // POURCENTAGES
                     hint = "Moins par Moins donne Plus."; 
                 } 
                 else if (world == 25) { 
-                    let sq = rand(2, 4);
-                    let square = sq * sq;
-                    let mult = 2;
-                    let start = square * mult;
-                    let add = rand(1, 9);
-                    ans = add;
+                    let sq = rand(2, 5);
+                    let mult = rand(2, 4);
+                    
+                    // Valeur du bloc central (ex: 3² * 2 = 18)
+                    let middleVal = sq * sq * mult;
+                    
+                    // Start est plus grand que le milieu pour garder un calcul positif au début
+                    let start = middleVal + rand(10, 40); 
+                    
+                    let add = rand(2, 15);
+                    
+                    // Calcul réel : Start - (Carré * Mult) + Add
+                    ans = start - middleVal + add;
+                    
                     op = `${start} - ${sq}² × ${mult} + ${add}`;
                     instr = "CHAÎNE ROYALE :";
-                    hint = "Puissance > Mult > Addition/Soustraction (Gauche Droite).";
+                    hint = "Puissance > Mult > Soustraction > Addition (Gauche à droite).";
                 }
                 else {
                     // BOSS FINAL : Chaos Prioritaire
@@ -4905,12 +4922,23 @@ case 15: // POURCENTAGES
                     instr = "Résous :"; 
                     hint = "Groupe les x à gauche, les nombres à droite."; 
                 } 
-                else if (world == 25) { 
-                    ans = rand(1, 4) * 4;
-                    let res = (ans / 2) + (ans / 4);
-                    op = `x/2 + x/4 = ${res}`;
+                else if (world == 25) {
+                    // 1. On choisit deux dénominateurs au hasard (ex: 3 et 4)
+                    let d1 = rand(2, 5);
+                    let d2 = rand(2, 5);
+
+                    // 2. On s'assure que la réponse X est un multiple des deux dénominateurs
+                    // (Comme ça, la division tombe juste). Ex: 3 * 4 = 12.
+                    let common = d1 * d2;
+                    ans = common * rand(1, 3); // La réponse sera 12, 24 ou 36...
+
+                    // 3. On calcule le résultat de l'équation
+                    let res = (ans / d1) + (ans / d2);
+
+                    op = `x/${d1} + x/${d2} = ${res}`;
                     instr = "ÉQUATION TOTALE :";
-                    hint = "Pense en décimal (0.5x + 0.25x = 0.75x).";
+                    // L'indice s'adapte aux chiffres tirés
+                    hint = `Teste des multiples de ${d1} et ${d2} (ex: ${common}...).`;
                 }
                 else {
                     // BOSS FINAL : Identité Remarquable (a² - b²) Variée
