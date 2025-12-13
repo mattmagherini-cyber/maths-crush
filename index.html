@@ -354,6 +354,18 @@
         #game-screen { padding-top: 60px; gap: 1vh; }
         .hud-top { height: 50px; }
     }
+
+/* --- MODALE D'ABANDON --- */
+    #quit-modal {
+        position: fixed; top: 0; left: 0; 
+        width: 100%; height: 100%; 
+        background: rgba(0, 0, 0, 0.6); /* Fond plus clair pour voir le jeu derrière */
+        backdrop-filter: blur(2px);
+        z-index: 40000; /* Au-dessus du jeu */
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    #quit-modal.active { opacity: 1; pointer-events: all; }
 </style>
 </head>
 <body>
@@ -399,6 +411,20 @@
     </div>
 </div>
 
+<div id="quit-modal">
+    <div class="modal-card">
+        <div class="modal-emoji">⚠️</div>
+        <div class="modal-title">ATTENTION !</div>
+        <div class="modal-subtitle" style="color:#ff7675; font-size:1rem;">Le chrono tourne toujours ! ⏳</div>
+        <p style="color:#dfe6e9; margin: 15px 0; font-size:1.1rem; line-height:1.4;">
+            Si tu abandonnes maintenant,<br>
+            <span style="color:#fab1a0; font-weight:bold;">tu perdras 1 Vie ❤️</span>.
+        </p>
+        <button class="btn-modal" onclick="window.game.cancelQuit()">NON, JE CONTINUE !</button>
+        <button class="btn-modal fail" style="margin-top:10px; opacity:0.8;" onclick="window.game.confirmQuit()">J'ABANDONNE (-1 ❤️)</button>
+    </div>
+</div>
+
 <div id="main-menu">
     <div id="grid-container"></div>
 </div>
@@ -409,7 +435,7 @@
 </div>
 
 <div id="game-screen">
-    <button class="k-close" onclick="window.game.close()">×</button>
+    <button class="k-close" onclick="window.game.askToQuit()">×</button>
     <div style="color:rgba(255,255,255,0.4); font-weight:bold; letter-spacing:2px; text-transform:uppercase; font-size:0.8rem;">Niveau <span id="g-lvl-num" style="color:white; font-size:1.2rem;">1</span></div>
     <div id="g-instr" style="color:#fdcb6e; font-size:1.1rem; margin: 10px 0 20px 0; font-style:italic; min-height:25px; text-align:center; padding:0 20px; font-weight:500;"></div>
     <div class="bars-container">
@@ -5238,6 +5264,36 @@ case 15: // POURCENTAGES
             if(timerInterval) clearInterval(timerInterval);
             showResultModal('loose', 0, currentSession.hint);
         },
+// --- NOUVELLES FONCTIONS D'ABANDON ---
+        askToQuit: () => {
+            // On ouvre juste la modale, ON NE COUPE PAS LE TIMER (timerInterval)
+            document.getElementById('quit-modal').classList.add('active');
+        },
+
+        cancelQuit: () => {
+            // On ferme la modale et on continue comme si de rien n'était
+            document.getElementById('quit-modal').classList.remove('active');
+        },
+
+        confirmQuit: () => {
+            document.getElementById('quit-modal').classList.remove('active');
+            
+            // On applique la pénalité de vie manuellement
+            if (!window.gameState.settings.creative && !window.gameState.prestige) {
+                if (window.gameState.lives > 0) {
+                    window.gameState.lives--;
+                    // Si on était au max, on relance le timer de régénération
+                    if (window.gameState.lives === MAX_LIVES - 1) { 
+                        window.gameState.lastLifeTime = Date.now(); 
+                    }
+                    localStorage.setItem('mq_2d', JSON.stringify(window.gameState));
+                    updateLivesSystem();
+                }
+            }
+            // Et on ferme le jeu
+            window.game.close();
+        },
+        // --------------------------------------
         close: () => { if(timerInterval) clearInterval(timerInterval); document.getElementById('game-screen').classList.remove('active'); currentSession = null; let currentWorld = Math.ceil((parseInt(document.getElementById('g-lvl-num').innerText))/20); enterWorld(currentWorld); },
         closeFromModal: () => { document.getElementById('result-modal').classList.remove('active'); window.game.close(); },
         tap: (k) => { 
